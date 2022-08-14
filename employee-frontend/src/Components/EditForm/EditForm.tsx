@@ -1,94 +1,112 @@
 import { useState } from "react";
-import { Employee } from "../Types";
-import { EmailInput, Form, Input, InputContainer, MyButton } from "./Styles";
-
-enum Property {
-  firstName = "firstName",
-  lastName = "lastName",
-  email = "email",
-  role = "role",
-  age = "age",
-}
+import { useForm } from "react-hook-form";
+import { Employee, Property } from "../Types";
+import {
+  ButtonContainer,
+  CancelButton,
+  EmailInput,
+  Form,
+  Input,
+  InputContainer,
+  SubmitButton,
+} from "./Styles";
 
 const EditForm = (props: {
   currentEmployee: Employee;
   expanded: boolean;
   toggle: () => void;
+  updateEmployee: (id: number, data: Employee) => Promise<void>;
+  id: number;
 }) => {
   const [employee, setEmployee] = useState<Employee>(props.currentEmployee);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+      email: employee.email,
+      role: employee.role,
+      age: employee.age,
+    },
+  });
 
-  const handleChange = (value: string, property: Property) => {
-    switch (property) {
-      case Property.firstName:
-        setEmployee({ ...employee, firstName: value });
-        break;
-      case Property.lastName:
-        setEmployee({ ...employee, lastName: value });
-        break;
-      case Property.email:
-        setEmployee({ ...employee, email: value });
-        break;
-      case Property.role:
-        setEmployee({ ...employee, role: value });
-        break;
-      case Property.age:
-        setEmployee({ ...employee, age: Number(value) });
-        break;
+  const isValidEmail = (email: string) =>
+    // eslint-disable-next-line no-useless-escape
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      email
+    );
+
+  const handleEmailValidation = (email: string) => {
+    const isValid = isValidEmail(email);
+    const validityChanged =
+      (errors.email && isValid) || (!errors.email && !isValid);
+    if (validityChanged) {
+      console.log("Fire tracker with", isValid ? "Valid" : "Invalid");
     }
+
+    return isValid;
   };
 
   return (
     <Form expanded={props.expanded}>
-      <InputContainer>
-        <Input
-          onChange={(e) => handleChange(e.target.value, Property.firstName)}
-          type="text"
-          id="fname"
-          name="fname"
-          value={employee?.firstName}
-        ></Input>
-        <Input
-          onChange={(e) => handleChange(e.target.value, Property.lastName)}
-          type="text"
-          id="lname"
-          name="lname"
-          value={employee?.lastName}
-        ></Input>
-        <EmailInput
-          onChange={(e) => handleChange(e.target.value, Property.email)}
-          type="text"
-          id="email"
-          name="email"
-          value={employee?.email}
-        ></EmailInput>
-        <Input
-          onChange={(e) => handleChange(e.target.value, Property.role)}
-          type="text"
-          id="role"
-          name="role"
-          value={employee?.role}
-        ></Input>
-        <Input
-          style={{ width: "100px" }}
-          onChange={(e) => handleChange(e.target.value, Property.age)}
-          type="number"
-          min="0"
-          id="age"
-          name="age"
-          value={employee?.age}
-        ></Input>
-      </InputContainer>
-      <div style={{ display: "flex" }}>
-        <MyButton
-          style={{ marginRight: "10px", marginTop: "10px" }}
-          onClick={props.toggle}
-        >
-          Confirm
-        </MyButton>
-        <MyButton style={{ marginTop: "10px" }} onClick={props.toggle}>
-          Cancel
-        </MyButton>
-      </div>
+      <form
+        onSubmit={handleSubmit((data) => {
+          props.updateEmployee(props.id, data);
+          props.toggle();
+        })}
+      >
+        <InputContainer>
+          <Input
+            {...register("firstName", { required: "This is required" })}
+            style={{
+              border: errors.firstName
+                ? "2px solid red"
+                : "2px solid #00000045",
+            }}
+          />
+          <Input
+            {...register("lastName", { required: "This is required" })}
+            style={{
+              border: errors.lastName ? "2px solid red" : "2px solid #00000045",
+            }}
+          />
+          <EmailInput
+            {...register("email", {
+              required: true,
+              validate: handleEmailValidation,
+            })}
+            style={{
+              border: errors.email ? "2px solid red" : "2px solid #00000045",
+            }}
+          />
+          <Input
+            {...register("role", { required: "This is required" })}
+            style={{
+              border: errors.role ? "2px solid red" : "2px solid #00000045",
+            }}
+          />
+          <Input
+            type="number"
+            min="0"
+            {...register("age", {
+              required: "This is required",
+              valueAsNumber: true,
+            })}
+            style={{
+              width: "100px",
+              border: errors.age ? "2px solid red" : "2px solid #00000045",
+            }}
+          />
+        </InputContainer>
+        <ButtonContainer>
+          <SubmitButton type="submit" value="Confirm" />
+          <CancelButton onClick={props.toggle}>Cancel</CancelButton>
+        </ButtonContainer>
+      </form>
     </Form>
   );
 };

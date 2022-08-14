@@ -58,9 +58,10 @@ export const RowContainer = styled.li`
   background-color: #d1d1d1;
 `;
 
-export const StyledRow = styled.div`
+export const StyledRow = styled.div<{ expanded: boolean }>`
   display: flex;
   flex-direction: row;
+  box-shadow: ${(p) => (p.expanded ? "0 3px 5px 1px #0000003e" : "")};
 `;
 
 export const Cell = styled.div`
@@ -103,7 +104,7 @@ export const SvgContainer = styled.div`
     cursor: pointer;
     fill: #373049;
     :hover {
-      fill: #766d8d;
+      fill: #a63d40;
     }
     :active {
       transform: scale(0.9);
@@ -121,7 +122,7 @@ export const AddButton = styled.div`
   align-self: flex-end;
   margin-bottom: 5px;
   :hover {
-    background-color: #49415f;
+    background-color: #645686;
   }
   :active {
     transform: scale(0.97);
