@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Employee, Property } from "../Types";
+import { Employee } from "../Types";
 import {
   ButtonContainer,
   CancelButton,
