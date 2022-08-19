@@ -1,10 +1,10 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
-export const Window = styled.div`
+export const Window = styled(motion.div)`
   box-sizing: border-box;
   position: fixed;
   top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
   z-index: 11;
   display: flex;
@@ -16,7 +16,7 @@ export const Window = styled.div`
   box-shadow: -4px 5px 5px 5px #00000070;
 `;
 
-export const Header = styled.div`
+export const Header = styled(motion.div)`
   background-color: #2a2537;
   width: 100%;
   padding: 10px;
@@ -24,6 +24,7 @@ export const Header = styled.div`
   font-weight: bold;
   font-size: 20px;
   border-radius: 8px 8px 0 0;
+  user-select: none;
 `;
 
 export const FormContainer = styled.form`
@@ -74,7 +75,7 @@ export const Label = styled.label`
   font-weight: bold;
 `;
 
-export const FadedBackround = styled.div`
+export const FadedBackround = styled(motion.div)`
   box-sizing: border-box;
   position: absolute;
   width: 100vw;

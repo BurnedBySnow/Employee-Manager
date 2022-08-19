@@ -3,6 +3,7 @@ package com.employeemanager.rest.controller;
 import com.employeemanager.rest.Entity.Employee;
 import com.employeemanager.rest.repository.EmployeeRepository;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class EmployeeController {
 
     @GetMapping
     public List<Employee> getEmployees() {
-        return employeeRepository.findAll();
+        return employeeRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName"));
     }
 
     @GetMapping("/{id}")

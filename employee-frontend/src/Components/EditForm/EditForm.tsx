@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Employee } from "../Types";
 import {
@@ -18,7 +17,6 @@ const EditForm = (props: {
   updateEmployee: (id: number, data: Employee) => Promise<void>;
   id: number;
 }) => {
-  const [employee, setEmployee] = useState<Employee>(props.currentEmployee);
   const {
     register,
     handleSubmit,
@@ -26,11 +24,11 @@ const EditForm = (props: {
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
-      firstName: employee.firstName,
-      lastName: employee.lastName,
-      email: employee.email,
-      role: employee.role,
-      age: employee.age,
+      firstName: props.currentEmployee.firstName,
+      lastName: props.currentEmployee.lastName,
+      email: props.currentEmployee.email,
+      role: props.currentEmployee.role,
+      age: props.currentEmployee.age,
     },
   });
 
@@ -52,7 +50,13 @@ const EditForm = (props: {
   };
 
   return (
-    <Form expanded={props.expanded}>
+    <Form
+      $expanded={props.expanded ? 1 : 0}
+      animate={{
+        opacity: props.expanded ? 1 : 0,
+        height: props.expanded ? "auto" : 0,
+      }}
+    >
       <form
         onSubmit={handleSubmit((data) => {
           props.updateEmployee(props.id, data);

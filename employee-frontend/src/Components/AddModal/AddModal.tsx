@@ -19,6 +19,7 @@ import {
 const AddModal = (props: {
   closeModal: () => void;
   addEmployee: (employee: Employee) => Promise<void>;
+  add: boolean;
 }) => {
   // const [employee, setEmployee] = useState<Employee>(defaultValue);
   const {
@@ -58,7 +59,15 @@ const AddModal = (props: {
 
   return (
     <>
-      <Window>
+      <Window
+        initial={{ x: "calc(50vw - 50%)", y: "calc(-10vh)", opacity: 0 }}
+        animate={{
+          opacity: props.add ? 1 : 0,
+          scale: props.add ? 1 : 0,
+          x: "calc(50vw - 50%)",
+          y: "calc(-10vh)",
+        }}
+      >
         <Header>New Employee</Header>
         <FormContainer
           onSubmit={handleSubmit((data) => {
@@ -136,7 +145,13 @@ const AddModal = (props: {
           </ButtonContainer>
         </FormContainer>
       </Window>
-      <FadedBackround />
+      {props.add && (
+        <FadedBackround
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.5 }}
+          transition={{ duration: 0.3 }}
+        />
+      )}
     </>
   );
 };

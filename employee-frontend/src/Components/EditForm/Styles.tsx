@@ -1,9 +1,12 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
-export const Form = styled.div<{ expanded: boolean }>`
-  height: ${(p) => (p.expanded ? "auto" : "0")};
+export const Form = styled(motion.div)<{ $expanded: number }>`
+  height: ${(props) => (props.$expanded ? "auto" : 0)};
   overflow: hidden;
-  padding: ${(p) => (p.expanded ? "10px 20px" : "0")};
+  form {
+    padding: 10px 20px;
+  }
 `;
 
 export const Input = styled.input`

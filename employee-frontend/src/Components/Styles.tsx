@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 export const TopBar = styled.div`
@@ -30,19 +31,20 @@ export const Container = styled.div`
   flex-direction: column;
 `;
 
-export const Table = styled.div`
+export const StyledTable = styled(motion.div)`
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   color: black;
-  li:nth-child(even) {
-    background-color: white;
+  #topdiv:nth-child(even) {
+    background-color: #d1d1d1;
   }
+  background-color: white;
   overflow: hidden;
   border-radius: 10px;
   box-shadow: -4px 5px 5px 5px #00000070;
-  max-height: 1000px;
+  max-height: 70vh;
 `;
 
 export const TopRow = styled.div`
@@ -52,16 +54,23 @@ export const TopRow = styled.div`
   color: white;
   padding: 5px 0;
   width: 100%;
+  svg {
+    width: 14px;
+    fill: white;
+    margin-left: 5px;
+    transform: rotate(180deg);
+  }
 `;
 
-export const RowContainer = styled.li`
-  background-color: #d1d1d1;
-`;
+export const ListContainer = styled(motion.div)``;
 
-export const StyledRow = styled.div<{ expanded: boolean }>`
+export const StyledRow = styled(motion.li)`
   display: flex;
   flex-direction: row;
-  box-shadow: ${(p) => (p.expanded ? "0 3px 5px 1px #0000003e" : "")};
+
+  :children {
+    user-select: none;
+  }
 `;
 
 export const Cell = styled.div`
@@ -127,4 +136,10 @@ export const AddButton = styled.div`
   :active {
     transform: scale(0.97);
   }
+`;
+
+export const StyledH3 = styled.h2`
+  font-size: 16px;
+  margin: 0;
+  cursor: pointer;
 `;
