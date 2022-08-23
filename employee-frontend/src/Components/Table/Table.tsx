@@ -1,5 +1,4 @@
 import { AnimatePresence } from "framer-motion";
-import { useState } from "react";
 import {
   Cell,
   TopRow,
@@ -7,11 +6,16 @@ import {
   StyledH3,
   EmailCell,
   SmallCell,
-} from "../Styles";
+  SearchCell,
+  ArrowContainer,
+} from "./Styles";
 import { Employee, EmployeeRow, Property } from "../Types";
 import { sortEmployees } from "./SortTable";
 import { ReactComponent as Arrow } from "../../images/arrow.svg";
 import Row from "./Row";
+import { searchTable } from "./Search";
+import React, { useEffect, useState } from "react";
+import Tooltip from "../Tooltip/Tooltip";
 
 const Table = (props: {
   employees: EmployeeRow[];
@@ -19,6 +23,10 @@ const Table = (props: {
   updateEmployee: (id: number, data: Employee) => Promise<void>;
   deleteEmployee: (id: number) => Promise<void>;
 }) => {
+  const [shownEmployees, setShownEmployees] = useState<EmployeeRow[]>(
+    props.employees
+  );
+
   const [sorting, setSorting] = useState<{
     direction: "asc" | "desc";
     column: Property;
@@ -39,14 +47,33 @@ const Table = (props: {
     const sortedBy = sortEmployees({
       sortBy,
       param: arr,
-      setEmployees: props.setEmployees,
     });
 
-    const sorted = [...props.employees].sort(
+    const sorted = [...shownEmployees].sort(
       (a, b) => sortedBy?.indexOf(a.id) - sortedBy?.indexOf(b.id)
     );
-    props.setEmployees(sorted);
+    setShownEmployees(sorted);
   };
+
+  const onChangeHandler = async (input: string) => {
+    const filteredArr = searchTable(input, props.employees);
+    const arrParam = filteredArr.map((e) => ({
+      id: e.id,
+      value: e[sorting.column],
+    }));
+    const sortedBy = sortEmployees({
+      sortBy: sorting.direction,
+      param: arrParam,
+    });
+    const sorted = filteredArr.sort(
+      (a, b) => sortedBy?.indexOf(a.id) - sortedBy?.indexOf(b.id)
+    );
+    setShownEmployees(sorted);
+  };
+
+  useEffect(() => {
+    setShownEmployees(props.employees);
+  }, [props.employees]);
 
   return (
     <StyledTable>
@@ -54,7 +81,7 @@ const Table = (props: {
         <Cell
           onClick={() => {
             sort(
-              props.employees.map((e) => ({ id: e.id, value: e.firstName })),
+              shownEmployees.map((e) => ({ id: e.id, value: e.firstName })),
               Property.firstName
             );
           }}
@@ -62,19 +89,15 @@ const Table = (props: {
         >
           <StyledH3>First Name</StyledH3>
           {sorting.column === Property.firstName && (
-            <Arrow
-              style={
-                sorting.direction === "asc"
-                  ? { transform: "rotate(0deg)" }
-                  : { transform: "rotate(180deg)" }
-              }
-            />
+            <ArrowContainer direction={sorting.direction}>
+              <Arrow />
+            </ArrowContainer>
           )}
         </Cell>
         <Cell
           onClick={() => {
             sort(
-              props.employees.map((e) => ({ id: e.id, value: e.lastName })),
+              shownEmployees.map((e) => ({ id: e.id, value: e.lastName })),
               Property.lastName
             );
           }}
@@ -82,19 +105,15 @@ const Table = (props: {
         >
           <StyledH3>Last Name</StyledH3>
           {sorting.column === Property.lastName && (
-            <Arrow
-              style={
-                sorting.direction === "asc"
-                  ? { transform: "rotate(0deg)" }
-                  : { transform: "rotate(180deg)" }
-              }
-            />
+            <ArrowContainer direction={sorting.direction}>
+              <Arrow />
+            </ArrowContainer>
           )}
         </Cell>
         <EmailCell
           onClick={() => {
             sort(
-              props.employees.map((e) => ({ id: e.id, value: e.email })),
+              shownEmployees.map((e) => ({ id: e.id, value: e.email })),
               Property.email
             );
           }}
@@ -102,19 +121,15 @@ const Table = (props: {
         >
           <StyledH3>Email</StyledH3>
           {sorting.column === Property.email && (
-            <Arrow
-              style={
-                sorting.direction === "asc"
-                  ? { transform: "rotate(0deg)" }
-                  : { transform: "rotate(180deg)" }
-              }
-            />
+            <ArrowContainer direction={sorting.direction}>
+              <Arrow />
+            </ArrowContainer>
           )}
         </EmailCell>
         <Cell
           onClick={() => {
             sort(
-              props.employees.map((e) => ({ id: e.id, value: e.role })),
+              shownEmployees.map((e) => ({ id: e.id, value: e.role })),
               Property.role
             );
           }}
@@ -122,19 +137,15 @@ const Table = (props: {
         >
           <StyledH3>Role</StyledH3>
           {sorting.column === Property.role && (
-            <Arrow
-              style={
-                sorting.direction === "asc"
-                  ? { transform: "rotate(0deg)" }
-                  : { transform: "rotate(180deg)" }
-              }
-            />
+            <ArrowContainer direction={sorting.direction}>
+              <Arrow />
+            </ArrowContainer>
           )}
         </Cell>
         <SmallCell
           onClick={() => {
             sort(
-              props.employees.map((e) => ({ id: e.id, value: e.age })),
+              shownEmployees.map((e) => ({ id: e.id, value: e.age })),
               Property.age
             );
           }}
@@ -142,19 +153,20 @@ const Table = (props: {
         >
           <StyledH3>Age</StyledH3>
           {sorting.column === Property.age && (
-            <Arrow
-              style={
-                sorting.direction === "asc"
-                  ? { transform: "rotate(0deg)" }
-                  : { transform: "rotate(180deg)" }
-              }
-            />
+            <ArrowContainer direction={sorting.direction}>
+              <Arrow />
+            </ArrowContainer>
           )}
         </SmallCell>
-        <SmallCell style={{ userSelect: "none" }}></SmallCell>
+        <Tooltip content="Use '$>' or '$<' to search for age above or below, expample $>28 to get employees older than 28 years">
+          <SearchCell
+            placeholder="Filter"
+            onChange={(e) => onChangeHandler(e.target.value)}
+          />
+        </Tooltip>
       </TopRow>
       <AnimatePresence initial={false}>
-        {props.employees.map((employee) => (
+        {shownEmployees.map((employee) => (
           <Row
             key={employee.id}
             id={employee.id}

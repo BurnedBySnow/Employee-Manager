@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { Employee } from "../Types";
 import {
   ButtonContainer,
-  ErrorMessage,
   FadedBackround,
   FormContainer,
   Header,

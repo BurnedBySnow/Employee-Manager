@@ -1,6 +1,6 @@
 import { useState } from "react";
 import EditForm from "../EditForm/EditForm";
-import { StyledRow, Cell, EmailCell, SmallCell, SvgContainer } from "../Styles";
+import { StyledRow, Cell, EmailCell, SmallCell, SvgContainer } from "./Styles";
 import { Employee } from "../Types";
 import { ReactComponent as Edit } from "../../images/pen-solid.svg";
 import { ReactComponent as Delete } from "../../images/trash-solid.svg";
@@ -66,12 +66,12 @@ const Row = (props: {
         <EmailCell>{employee.email}</EmailCell>
         <Cell>{employee.role}</Cell>
         <SmallCell>{employee.age}</SmallCell>
-        <SmallCell>
+        <Cell>
           <SvgContainer>
             <Edit onClick={toggleCheck} width="1rem" />
             <Delete onClick={del} width="1rem" />
           </SvgContainer>
-        </SmallCell>
+        </Cell>
       </StyledRow>
       <EditForm
         currentEmployee={employee}
